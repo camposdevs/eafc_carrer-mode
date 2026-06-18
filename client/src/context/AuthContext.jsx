@@ -1,30 +1,72 @@
 import { createContext, useContext, useMemo, useState } from "react";
-import { TOKEN_KEY, USER_KEY } from "../utils/constants";
+import api from "../services/api";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY));
+  const [token, setToken] = useState(() => {
+    return localStorage.getItem("@eafc:token");
+  });
+
   const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem(USER_KEY);
+    const storedUser = localStorage.getItem("@eafc:user");
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  function login(authData) {
-    localStorage.setItem(TOKEN_KEY, authData.token);
-    localStorage.setItem(USER_KEY, JSON.stringify(authData.user));
-    setToken(authData.token);
-    setUser(authData.user);
+  async function login(email, password) {
+    const response = await api.post("/auth/login", {
+      email,
+      password
+    });
+
+    const { token: apiToken, user: apiUser } = response.data;
+
+    localStorage.setItem("@eafc:token", apiToken);
+    localStorage.setItem("@eafc:user", JSON.stringify(apiUser));
+
+    setToken(apiToken);
+    setUser(apiUser);
+
+    return response.data;
+  }
+
+  async function register(name, email, password) {
+    const response = await api.post("/auth/register", {
+      name,
+      email,
+      password
+    });
+
+    const { token: apiToken, user: apiUser } = response.data;
+
+    localStorage.setItem("@eafc:token", apiToken);
+    localStorage.setItem("@eafc:user", JSON.stringify(apiUser));
+
+    setToken(apiToken);
+    setUser(apiUser);
+
+    return response.data;
   }
 
   function logout() {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
+    localStorage.removeItem("@eafc:token");
+    localStorage.removeItem("@eafc:user");
+
     setToken(null);
     setUser(null);
   }
 
-  const value = useMemo(() => ({ token, user, isAuthenticated: Boolean(token), login, logout }), [token, user]);
+  const value = useMemo(() => {
+    return {
+      user,
+      token,
+      isAuthenticated: Boolean(token),
+      login,
+      register,
+      logout
+    };
+  }, [user, token]);
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
