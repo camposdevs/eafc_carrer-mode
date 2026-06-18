@@ -6,12 +6,27 @@ import {
   Typography,
   useMediaQuery
 } from "@mui/material";
-import { Logout, Menu, SportsSoccer } from "@mui/icons-material";
+
+import {
+  Logout,
+  Menu,
+  SportsSoccer
+} from "@mui/icons-material";
+
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 export default function Header({ onMenuClick }) {
   const { user, logout } = useAuth();
+
+  const navigate = useNavigate();
+
   const isDesktop = useMediaQuery("(min-width:900px)");
+
+  function handleLogout() {
+    logout();
+    navigate("/login");
+  }
 
   return (
     <Box
@@ -33,7 +48,14 @@ export default function Header({ onMenuClick }) {
         zIndex: 10
       }}
     >
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+      {/* Lado esquerdo */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 2
+        }}
+      >
         {!isDesktop && (
           <IconButton onClick={onMenuClick}>
             <Menu />
@@ -55,14 +77,31 @@ export default function Header({ onMenuClick }) {
         </Box>
 
         <Box>
-          <Typography sx={{ fontWeight: 900 }}>EA FC Career Tracker</Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            sx={{
+              fontWeight: 900
+            }}
+          >
+            EA FC Career Tracker
+          </Typography>
+
+          <Typography
+            variant="body2"
+            color="text.secondary"
+          >
             Dashboard profissional do modo carreira
           </Typography>
         </Box>
       </Box>
 
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+      {/* Lado direito */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1.5
+        }}
+      >
         <Avatar
           sx={{
             bgcolor: "#C1FF00",
@@ -75,11 +114,20 @@ export default function Header({ onMenuClick }) {
 
         {isDesktop && (
           <Box>
-            <Typography sx={{ fontWeight: 800, lineHeight: 1 }}>
+            <Typography
+              sx={{
+                fontWeight: 800,
+                lineHeight: 1
+              }}
+            >
               {user?.name || "Usuário"}
             </Typography>
-            <Typography variant="caption" color="text.secondary">
-              {user?.email}
+
+            <Typography
+              variant="caption"
+              color="text.secondary"
+            >
+              {user?.email || ""}
             </Typography>
           </Box>
         )}
@@ -88,7 +136,7 @@ export default function Header({ onMenuClick }) {
           variant="outlined"
           color="primary"
           startIcon={<Logout />}
-          onClick={logout}
+          onClick={handleLogout}
           sx={{
             display: {
               xs: "none",

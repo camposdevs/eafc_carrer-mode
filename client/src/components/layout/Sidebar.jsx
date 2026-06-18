@@ -34,6 +34,7 @@ const menuItems = [
   { label: "Resultados", path: "/results", icon: <BarChart /> },
   { label: "Competições", path: "/competitions", icon: <EmojiEvents /> },
   { label: "Temporadas", path: "/seasons", icon: <MilitaryTech /> },
+  { label: "Histórico", path: "/history", icon: <Timeline /> },
   { label: "Rankings", path: "/rankings", icon: <FormatListNumbered /> },
   { label: "Favoritos", path: "/favorites", icon: <Favorite /> },
   { label: "Configurações", path: "/settings", icon: <Settings /> }
