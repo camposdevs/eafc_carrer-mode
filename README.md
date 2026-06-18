@@ -297,7 +297,7 @@ eafc-career-tracker/
 
 ## 🎯 Objetivo do Projeto
 
-O EA FC Career Tracker foi criado para resolver uma limitação comum dos modos carreira do EA FC/FIFA: a falta de histórico detalhado e persistente.
+O EA FC Career foi criado para resolver uma limitação comum dos modos carreira do EA FC/FIFA: a falta de histórico detalhado e persistente.
 
 O sistema permite registrar temporadas, transferências, estatísticas, conquistas e evolução completa da carreira, mantendo todas as informações organizadas e acessíveis em um único lugar.
 
