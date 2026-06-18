@@ -8,13 +8,11 @@ import {
 } from "@mui/icons-material";
 import { useQuery } from "@tanstack/react-query";
 import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
+  PieChart,
+  Pie,
   Tooltip,
-  XAxis,
-  YAxis
+  Cell,
+  ResponsiveContainer
 } from "recharts";
 
 import api from "../services/api";
@@ -30,19 +28,26 @@ export default function Dashboard() {
     }
   });
 
-  const { data: goalsByCareer = [] } = useQuery({
-    queryKey: ["goals-by-career"],
-    queryFn: async () => {
-      const response = await api.get("/dashboard/goals-by-career");
-      return response.data;
+  const resultData = [
+    {
+      name: "Vitórias",
+      value: summary?.total_wins || 0
+    },
+    {
+      name: "Empates",
+      value: summary?.total_draws || 0
+    },
+    {
+      name: "Derrotas",
+      value: summary?.total_losses || 0
     }
-  });
+  ];
 
   return (
     <Box>
       <PageHeader
         title="Dashboard"
-        description="Visão geral das suas carreiras, gols, títulos e evolução."
+        description="Visão geral profissional das suas carreiras."
       />
 
       <Grid container spacing={2.5}>
@@ -91,17 +96,26 @@ export default function Dashboard() {
           />
         </Grid>
 
-        <Grid item xs={12} md={8}>
-          <Card sx={{ p: 3, height: 380 }}>
+        <Grid item xs={12} md={7}>
+          <Card sx={{ p: 3, height: 360 }}>
             <Typography variant="h6" sx={{ fontWeight: 900, mb: 2 }}>
-              Gols por carreira
+              Resultados
             </Typography>
 
             <ResponsiveContainer width="100%" height="85%">
-              <BarChart data={goalsByCareer}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
-                <XAxis dataKey="career" stroke="#B3B3B3" />
-                <YAxis stroke="#B3B3B3" />
+              <PieChart>
+                <Pie
+                  data={resultData}
+                  dataKey="value"
+                  nameKey="name"
+                  outerRadius={110}
+                  label
+                >
+                  <Cell fill="#C1FF00" />
+                  <Cell fill="#B3B3B3" />
+                  <Cell fill="#ff4d4d" />
+                </Pie>
+
                 <Tooltip
                   contentStyle={{
                     background: "#121212",
@@ -109,23 +123,20 @@ export default function Dashboard() {
                     borderRadius: 12
                   }}
                 />
-                <Bar dataKey="goals" fill="#C1FF00" radius={[8, 8, 0, 0]} />
-              </BarChart>
+              </PieChart>
             </ResponsiveContainer>
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={4}>
-          <Card sx={{ p: 3, height: 380 }}>
-            <Typography variant="h6" sx={{ fontWeight: 900 }}>
-              Aproveitamento
+        <Grid item xs={12} md={5}>
+          <Card sx={{ p: 3, height: 360 }}>
+            <Typography variant="h6" sx={{ fontWeight: 900, mb: 3 }}>
+              Resumo de desempenho
             </Typography>
 
-            <Box sx={{ mt: 4, display: "grid", gap: 2 }}>
-              <StatLine label="Vitórias" value={summary?.total_wins || 0} />
-              <StatLine label="Empates" value={summary?.total_draws || 0} />
-              <StatLine label="Derrotas" value={summary?.total_losses || 0} />
-            </Box>
+            <StatLine label="Vitórias" value={summary?.total_wins || 0} />
+            <StatLine label="Empates" value={summary?.total_draws || 0} />
+            <StatLine label="Derrotas" value={summary?.total_losses || 0} />
           </Card>
         </Grid>
       </Grid>
@@ -138,6 +149,7 @@ function StatLine({ label, value }) {
     <Box
       sx={{
         p: 2,
+        mb: 2,
         borderRadius: 3,
         background: "rgba(255,255,255,0.04)",
         display: "flex",
@@ -146,7 +158,10 @@ function StatLine({ label, value }) {
       }}
     >
       <Typography color="text.secondary">{label}</Typography>
-      <Typography sx={{ fontWeight: 900, color: "#C1FF00" }}>{value}</Typography>
+
+      <Typography sx={{ fontWeight: 900, color: "#C1FF00" }}>
+        {value}
+      </Typography>
     </Box>
   );
 }
