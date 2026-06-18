@@ -9,13 +9,14 @@ const transfersRoutes = require("./transfers.routes");
 const competitionsRoutes = require("./competitions.routes");
 const titlesRoutes = require("./titles.routes");
 const favoritesRoutes = require("./favorites.routes");
+const sportmonksRoutes = require("./sportmonks.routes");
 
 const router = express.Router();
 
 router.get("/health", (req, res) => {
   return res.json({
     status: "ok",
-    message: "EA FC Career Tracker API funcionando."
+    message: "EA FC Career API funcionando."
   });
 });
 
@@ -28,5 +29,6 @@ router.use("/transfers", transfersRoutes);
 router.use("/competitions", competitionsRoutes);
 router.use("/titles", titlesRoutes);
 router.use("/favorites", favoritesRoutes);
+router.use("/sportmonks", sportmonksRoutes);
 
 module.exports = router;
