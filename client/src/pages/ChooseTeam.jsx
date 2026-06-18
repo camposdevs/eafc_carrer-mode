@@ -28,20 +28,30 @@ export default function ChooseTeam() {
   const [careerName, setCareerName] = useState("");
   const [initialSeason, setInitialSeason] = useState("2025/26");
   const [error, setError] = useState("");
+  const [searching, setSearching] = useState(false);
 
   async function handleSearch(event) {
     event.preventDefault();
 
-    if (!query.trim()) return;
+    if (!query.trim()) {
+      setError("Digite o nome de um clube.");
+      return;
+    }
 
     try {
+      setSearching(true);
       setError("");
+      setTeams([]);
+
       const response = await api.get(
-        `/sportmonks/teams/search?query=${encodeURIComponent(query)}`
+        `/sportmonks/teams/search?query=${encodeURIComponent(query.trim())}`
       );
-      setTeams(response.data);
+
+      setTeams(response.data || []);
     } catch (err) {
       setError(err.response?.data?.message || "Erro ao buscar times.");
+    } finally {
+      setSearching(false);
     }
   }
 
@@ -50,7 +60,7 @@ export default function ChooseTeam() {
       const response = await api.post("/sportmonks/careers/import", {
         career_name: careerName || `Carreira ${team.name}`,
         initial_season: initialSeason,
-        team
+        team_id: team.sportmonks_id
       });
 
       return response.data;
@@ -119,15 +129,25 @@ export default function ChooseTeam() {
             </Grid>
 
             <Grid item xs={12} md={1}>
-              <Button fullWidth type="submit" variant="contained" sx={{ height: 56 }}>
-                Buscar
+              <Button
+                fullWidth
+                type="submit"
+                variant="contained"
+                disabled={searching}
+                sx={{ height: 56 }}
+              >
+                {searching ? <CircularProgress size={22} /> : "Buscar"}
               </Button>
             </Grid>
           </Grid>
         </Box>
       </Card>
 
-      {teams.length === 0 ? (
+      {searching ? (
+        <Box sx={{ display: "grid", placeItems: "center", minHeight: 260 }}>
+          <CircularProgress />
+        </Box>
+      ) : teams.length === 0 ? (
         <EmptyState
           title="Pesquise um clube"
           description="Digite o nome de um time para importar dados iniciais como escudo, país, estádio e elenco."
