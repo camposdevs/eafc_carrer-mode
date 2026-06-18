@@ -12,6 +12,7 @@ const favoritesRoutes = require("./favorites.routes");
 const sportmonksRoutes = require("./sportmonks.routes");
 const dashboardRoutes = require("./dashboard.routes");
 const rankingsRoutes = require("./rankings.routes");
+const statsRoutes = require("./stats.routes");
 
 const router = express.Router();
 
@@ -34,5 +35,6 @@ router.use("/favorites", favoritesRoutes);
 router.use("/sportmonks", sportmonksRoutes);
 router.use("/dashboard", dashboardRoutes);
 router.use("/rankings", rankingsRoutes);
+router.use("/stats", statsRoutes);
 
 module.exports = router;

@@ -2,10 +2,17 @@ services:
   - type: web
     name: eafc-career-tracker-api
     env: node
-    plan: free
     rootDir: server
     buildCommand: npm install
     startCommand: npm start
     envVars:
-      - key: NODE_ENV
-        value: production
+      - key: PORT
+        value: 3333
+      - key: JWT_SECRET
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SPORTMONKS_API_TOKEN
+        sync: false
